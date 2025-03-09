@@ -44,4 +44,4 @@ const MahabharataSchema = new mongoose.Schema({
     ]
 });
 
-export default mongoose.models.Mahabharata || mongoose.model("Mahabharata" , MahabharataSchema) ; 
+export default mongoose.models.Mahabharata || mongoose.model("Mahabharata" , MahabharataSchema , 'ShlokVaani_Mahabharata') ; 
