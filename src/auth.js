@@ -4,10 +4,9 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import dbConnect from "./lib/dbConnect";
 import User from "./backend/models/User";
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
-
-    // OAuth authentication providers...
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -26,7 +25,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           throw new Error("User not found");
         }
 
-        // Check if the user signed up via Google
+        // Ensure users who sign up via Google cannot log in via credentials
         if (user.authProvider === "google") {
           throw new Error("Please use Google Sign-In");
         }
@@ -42,11 +41,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
 
   callbacks: {
-    async session({ session, user }) {
-      if (user) {
-        session.user.id = user.id;
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id;
       }
       return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
     },
   },
 
@@ -59,4 +64,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
 
   secret: process.env.NEXTAUTH_SECRET,
-})
+
+  trustHost: true, 
+});
