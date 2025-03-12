@@ -1,6 +1,8 @@
 import dbConnect from "./dbConnect.js";
 
-(async () => {
-    await dbConnect();
-    process.exit();
-})();
+const testConnection = async () => {
+  console.log("🚀 Testing MongoDB connection...");
+  await dbConnect();
+};
+
+testConnection();

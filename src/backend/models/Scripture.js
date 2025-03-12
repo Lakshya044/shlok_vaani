@@ -33,7 +33,10 @@ const ShlokaSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  comments: [CommentSchema], 
+  comments: {
+    type : [CommentSchema],
+    default : [] 
+  },
   commentCount: {
     type: Number,
     default: 0,
