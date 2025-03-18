@@ -55,10 +55,10 @@ const ChapterSchema = new mongoose.Schema({
 });
 
 const ScriptureSchema = new mongoose.Schema({
-  type: {
+  scripture: {
     type: String,
-    required: true,
-    enum: ["Mahabharata", "Ramayan", "Bhagavad Gita", "Other"],
+    // required: true,
+    // enum: ["Mahabharata", "Ramayan", "Bhagavad Gita", "Other"],
   },
   book: {
     type: String,
