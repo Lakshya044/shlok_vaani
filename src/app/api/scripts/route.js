@@ -13,7 +13,7 @@ export async function POST() {
     const shlokasData = JSON.parse(rawData);
 
     await Scripture.create({
-      type: "Mahabharata",
+      scripture: "Mahabharata",
       book: "Adi Parva",
       chapters: [
         {
