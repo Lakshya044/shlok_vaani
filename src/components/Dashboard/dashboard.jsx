@@ -2,7 +2,7 @@
 import { useEffect, useState, useRef } from "react";
 import shlokas from "../../../public/data/shlokas";
 import Outer_Navbar from "../Outer_Navbar";
-const ShlokaBanner = () => {
+const Dashobard = () => {
     const [scrollY, setScrollY] = useState(0);
   const scrollContainerRef = useRef(null);
   const [isPaused, setIsPaused] = useState(false);
@@ -38,9 +38,6 @@ const ShlokaBanner = () => {
 
   return (
     <>
-
-    <Outer_Navbar />
-
     <div
       className="relative w-full h-screen flex flex-col sm:flex-row items-center justify-center bg-cover bg-center p-4"
       style={{ backgroundImage: "url('/bg-image.jpg')" }}
@@ -84,4 +81,4 @@ const ShlokaBanner = () => {
   );
 };
 
-export default ShlokaBanner;
+export default Dashobard;

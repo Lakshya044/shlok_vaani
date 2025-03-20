@@ -1,13 +1,14 @@
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/backend/models/User";
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
     const { name, email, password } = await req.json(); // Extract data from request
 
     if (!name || !email || !password) {
-      return Response.json({ error: "All fields are required" }, { status: 400 });
+      return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 
     await dbConnect();
@@ -15,7 +16,7 @@ export async function POST(req) {
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      return Response.json({ error: "User already exists" }, { status: 400 });
+      return NextResponse.json({ error: "User already exists" }, { status: 400 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -29,10 +30,10 @@ export async function POST(req) {
 
     await newUser.save();
     console.log("SignUp Response", newUser)
-    return Response.json({ message: "User registered successfully" }, { status: 201 });
+    return NextResponse.json({ message: "User registered successfully" }, { status: 201 });
 
   } catch (error) {
     console.error("Signup error:", error);
-    return Response.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
