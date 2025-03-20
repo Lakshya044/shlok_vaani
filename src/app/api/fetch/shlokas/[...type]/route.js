@@ -1,5 +1,5 @@
 import dbConnect from "@/lib/dbConnect";
-import Scripture from "@/backend/models/Scripture";
+import Shloka from "@/backend/models/Shloka";
 import { NextResponse } from "next/server";
 
 export const GET = async (req, { params }) => {
@@ -10,57 +10,46 @@ export const GET = async (req, { params }) => {
 
     console.log("Raw params received:", params);
 
-   
-    const typeParams = params?.type; 
+    const typeParams = params?.type;
     if (!typeParams || !Array.isArray(typeParams) || typeParams.length < 3) {
       return NextResponse.json(
-        { message: "Scripture, book, and chapter are required" },
+        { message: "Scripture, bookNo, and chapterNo are required" },
         { status: 400 }
       );
     }
 
-    
-    const [scripture, book, chapter] = typeParams.map((param) =>
+    const [scripture, bookNoRaw, chapterNoRaw] = typeParams.map((param) =>
       decodeURIComponent(param.trim())
     );
 
-    console.log(`Fetching shlokas for: ${scripture} -> ${book} -> ${chapter}`);
+    const bookNo = String(bookNoRaw);
+    const chapterNo = Number(chapterNoRaw);
 
-  
-    const bookData = await Scripture.findOne({
-      scripture: { $regex: `^${scripture}$`, $options: "i" },
-      book: { $regex: `^${book}$`, $options: "i" },
+    console.log(
+      `Fetching shlokas for: ${scripture} -> ${bookNo} -> ${chapterNo}`
+    );
+
+    const bookData = await Shloka.find({
+      scripture: scripture,
+      bookNo: bookNo,
+      chapterNo: chapterNo,
     });
 
-    if (!bookData) {
+    if (!bookData.length) {
       return NextResponse.json(
-        { message: `No book found for "${book}" in "${scripture}"` },
+        {
+          message: `No data found for "${scripture}" -> Book "${bookNo}" -> Chapter "${chapterNo}"`,
+        },
         { status: 404 }
       );
     }
 
-    // Find chapter
-    const selectedChapter = bookData.chapters.find(
-      (ch) => ch.chapterTitle.toLowerCase() === chapter.toLowerCase()
-    );
+    const filteredData = bookData.map(({ shlokaNo, text }) => ({
+      shlokaNo,
+      text,
+    }));
 
-    if (!selectedChapter) {
-      return NextResponse.json(
-        { message: `Chapter "${chapter}" not found in "${book}"` },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json(
-      {
-        scripture: bookData.scripture,
-        book: bookData.book,
-        chapterTitle: selectedChapter.chapterTitle,
-        chapterNumber: selectedChapter.chapterNumber,
-        shlokas: selectedChapter.shlokas || [],
-      },
-      { status: 200 }
-    );
+    return NextResponse.json({ shlokas: filteredData }, { status: 200 });
   } catch (error) {
     console.error("Error fetching data:", error);
     return NextResponse.json(
