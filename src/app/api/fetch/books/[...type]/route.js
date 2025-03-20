@@ -40,7 +40,7 @@ export const GET = async (req, { params }) => {
     const formattedChapters = uniqueChapters.map((bookNo) => ({ bookNo }));
 
     return NextResponse.json(
-      { chapterNumber: formattedChapters },
+      { BookNumber: formattedChapters },
       { status: 200 }
     );
   } catch (error) {
