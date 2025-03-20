@@ -11,40 +11,33 @@ export const GET = async (req, { params }) => {
     console.log("Raw params received:", params);
 
     const typeParams = params?.type;
-    if (!typeParams || !Array.isArray(typeParams) || typeParams.length < 2) {
+    if (!typeParams || !Array.isArray(typeParams) || typeParams.length < 1) {
       return NextResponse.json(
-        { message: "Scripture and bookNo are required" },
+        { message: "Scripture is required" },
         { status: 400 }
       );
     }
 
-    const [scripture, bookNoRaw] = typeParams.map((param) =>
+    const [scripture] = typeParams.map((param) =>
       decodeURIComponent(param.trim())
     );
 
-    const bookNo = String(bookNoRaw);
-
-    console.log(`Fetching shlokas for: ${scripture} -> ${bookNo} `);
+    console.log(`Fetching shlokas for: ${scripture}  `);
 
     const bookData = await Shloka.find({
       scripture: scripture,
-      bookNo: bookNo,
     });
 
     if (!bookData.length) {
       return NextResponse.json(
-        { message: `No data found for "${scripture}" -> Book "${bookNo}` },
+        { message: `No data found for "${scripture}` },
         { status: 404 }
       );
     }
 
-    const uniqueChapters = [
-      ...new Set(bookData.map(({ chapterNo }) => chapterNo)),
-    ];
+    const uniqueChapters = [...new Set(bookData.map(({ bookNo }) => bookNo))];
 
-    const formattedChapters = uniqueChapters.map((chapterNo) => ({
-      chapterNo,
-    }));
+    const formattedChapters = uniqueChapters.map((bookNo) => ({ bookNo }));
 
     return NextResponse.json(
       { chapterNumber: formattedChapters },
