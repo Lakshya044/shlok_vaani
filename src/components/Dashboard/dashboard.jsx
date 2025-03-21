@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import shlokas from "../../../public/data/shlokas";
-import Outer_Navbar from "../Outer_Navbar";
 const Dashobard = () => {
     const [scrollY, setScrollY] = useState(0);
   const scrollContainerRef = useRef(null);

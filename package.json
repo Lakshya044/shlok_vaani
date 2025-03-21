@@ -12,6 +12,7 @@
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "dotenv": "^16.4.7",
+    "framer-motion": "^12.5.0",
     "fs": "^0.0.1-security",
     "mongoose": "^8.12.1",
     "next": "15.1.7",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "daisyui": "^5.0.9",
     "eslint": "^9",
     "eslint-config-next": "15.1.7",
     "postcss": "^8",

@@ -85,7 +85,7 @@ export default function AuthForm(){
 
   useEffect(() => {
     if (isLoggedIn) {
-      router.push("/logged-in-dashboard");
+      router.push("/homepage");
     }
   }, [isLoggedIn]);
 
@@ -105,7 +105,7 @@ export default function AuthForm(){
     if(response.ok){
      console.log("Google Sign In Successful")
       setIsLoggedIn(true)
-      router.push("/logged-in-dashboard")
+      router.push("/homepage")
     }else{
       console.log("Google Sign In Failed")
       setError(true)
@@ -118,7 +118,7 @@ export default function AuthForm(){
   return (
     <>
       {/* Large Screen Card */}
-      <div className="h-[90%] bg-[#FAE6A1] flex justify-center items-center p-4 py-20">
+      <div className="h-[90%] bg-base-100 flex justify-center items-center p-4 py-20">
         <div className="w-full max-w-4xl flex flex-col md:flex-row gap-10 gap-x-20">
           {/* Left and Right Cards for Larger Screens */}
           <div className="flex-1 p-6 rounded-2xl h-[480px] shadow-lg border-4 border-[#CE3E14] bg-white md:block hidden">
