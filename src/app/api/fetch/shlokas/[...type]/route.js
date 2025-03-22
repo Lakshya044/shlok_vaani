@@ -44,7 +44,8 @@ export const GET = async (req, { params }) => {
       );
     }
 
-    const filteredData = bookData.map(({ shlokaNo, text }) => ({
+    const filteredData = bookData.map(({ _id,shlokaNo, text }) => ({
+      _id,
       shlokaNo,
       text,
     }));
