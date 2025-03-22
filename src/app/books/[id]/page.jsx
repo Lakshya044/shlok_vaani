@@ -1,57 +1,96 @@
 "use client";
-import Outer_Footer from "@/components/Outer_Footer";
-import Outer_Navbar from "@/components/Outer_Navbar";
-import { useParams } from "next/navigation";
 
-const books = {
-  1: { name: "Ramayana", shlokas: ["श्लोक 1", "श्लोक 2", "श्लोक 3"] },
-  2: { name: "Mahabharata", shlokas: ["श्लोक 1", "श्लोक 2", "श्लोक 3"] },
-  3: { name: "Bhagavad Gita", shlokas: ["श्लोक 1", "श्लोक 2", "श्लोक 3"] },
-  4: { name: "Vedas", shlokas: ["श्लोक 1", "श्लोक 2", "श्लोक 3"] },
-  5: { name: "Upanishads", shlokas: ["श्लोक 1", "श्लोक 2", "श्लोक 3"] },
-};
+import React, { useEffect, useState } from 'react';
+import Outer_Footer from '@/components/Outer_Footer';
+import Outer_Navbar from '@/components/Outer_Navbar';
+import ShlokaCard from './ShlokaCard';
+import { FaSpinner, FaArrowLeft, FaArrowRight } from 'react-icons/fa'; // Importing spinner and arrow icons
 
-const BookPage = () => {
-  const { id } = useParams();
-  const book = books[id] || { name: "Unknown Book", shlokas: [] };
+const Page = () => {
+  const [shlokas, setShlokas] = useState([]);
+  const [currentBook, setCurrentBook] = useState(1);
+  const [currentChapter, setCurrentChapter] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0); // Track the current page for pagination
+  const [loading, setLoading] = useState(false); // Track if data is being fetched
+
+  const fetchShlokas = async () => {
+    try {
+      setLoading(true); // Set loading to true when fetching data
+      const shlokaResponse = await fetch(
+        `http://localhost:3000/api/fetch/shlokas/Mahabharata/${currentBook}/${currentChapter}`
+      );
+
+      if (!shlokaResponse.ok) {
+        throw new Error('Failed to fetch shlokas');
+      }
+
+      const data = await shlokaResponse.json();
+      const newShlokas = data?.shlokas || [];
+
+      setShlokas(newShlokas); // Save all shlokas in state
+    } catch (error) {
+      console.error('Error fetching shlokas:', error);
+    } finally {
+      setLoading(false); // Set loading to false after fetching data
+    }
+  };
+
+  // Logic to handle pagination
+  const nextPage = () => {
+    setCurrentPage((prevPage) => prevPage + 1); // Increment page when "Next" is clicked
+  };
+
+  const prevPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 0)); // Decrement page when "Previous" is clicked, but not below 0
+  };
+
+  // Only show 10 shlokas at a time based on the current page
+  const displayedShlokas = shlokas.slice(currentPage * 10, (currentPage + 1) * 10);
+
+  useEffect(() => {
+    fetchShlokas(); // Fetch all shlokas initially
+  }, [currentBook, currentChapter]); // Fetch new shlokas when book or chapter changes
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white">
+    <div>
       <Outer_Navbar />
-
-      <main className="flex-grow flex flex-col items-center px-6 py-24">
-        <div className="max-w-2xl w-full text-center">
-          {/* Book Title */}
-          <h1 className="text-5xl font-extrabold text-yellow-400 drop-shadow-md tracking-wide">
-            {book.name}
-          </h1>
-          <p className="text-lg text-yellow-300 mt-3 italic">
-            Explore the sacred wisdom of {book.name}.
-          </p>
-
-          {/* Shlokas Section */}
-          <div className="mt-8 w-full space-y-6">
-            {book.shlokas.length > 0 ? (
-              book.shlokas.map((shloka, index) => (
-                <div
-                  key={index}
-                  className="p-6 bg-white bg-opacity-10 backdrop-blur-lg shadow-lg rounded-lg border border-yellow-500 transition-transform duration-300 hover:scale-105 hover:shadow-xl"
-                >
-                  <p className="text-lg font-semibold text-white tracking-wide">
-                    {shloka}
-                  </p>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-300">No shlokas available.</p>
-            )}
+      <div className="p-6 space-y-6 pt-24">
+        {displayedShlokas.map((shloka) => (
+          <ShlokaCard key={shloka._id} uid={shloka._id} />
+        ))}
+        
+        {/* Loading Spinner when fetching more shlokas */}
+        {loading && (
+          <div className="flex justify-center">
+            <FaSpinner className="animate-spin text-blue-500 text-3xl" />
           </div>
-        </div>
-      </main>
+        )}
 
+        {/* Pagination Buttons */}
+        <div className="flex justify-between mt-4">
+          <button
+            className="px-6 py-2 bg-yellow-700 text-white rounded-md shadow-md hover:bg-yellow-900 transition-all duration-300 ease-in-out flex items-center"
+            onClick={prevPage}
+            disabled={currentPage === 0} // Disable if already at the first page
+            title={currentPage === 0 ? 'No previous page' : ''}
+          >
+            <FaArrowLeft className="mr-2" />
+            Previous
+          </button>
+          
+          <button
+            className="px-6 py-2 bg-yellow-700 text-white rounded-md shadow-md hover:bg-yellow-900 transition-all duration-300 ease-in-out flex items-center"
+            onClick={nextPage}
+            disabled={displayedShlokas.length < 10} // Disable if fewer than 10 shlokas are displayed
+          >
+            Next
+            <FaArrowRight className="ml-2" />
+          </button>
+        </div>
+      </div>
       <Outer_Footer />
     </div>
   );
 };
 
-export default BookPage;
+export default Page;
