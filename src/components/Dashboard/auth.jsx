@@ -59,6 +59,7 @@ export default function AuthForm(){
         setMessage(data.message || "Account created successfully. Please log in.");
         setShowMessage(true);
         setIsSignUp(false);
+        router.push("/homepage");
       }
   
       // Handle login
