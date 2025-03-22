@@ -1,0 +1,95 @@
+/* Base styling for the button */
+.expand-button {
+  display: flex;
+  align-items: center; /* Align items vertically in the center */
+  padding: 1px 4px; /* Adjust padding for better size */
+  color: #FFEB3B; /* Yellow text color */
+  font-size: 14px; /* Slightly smaller font size */
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out, transform 0.2s ease; /* Smooth transition */
+  outline: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}
+
+/* Button hover state */
+.expand-button:hover {
+  background-color: #f4c5082b; /* Darker yellow for hover */
+  color: #fff; /* White text on hover */
+  transform: scale(1.05); /* Slightly enlarge the button on hover */
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15); /* Shadow increase for better focus */
+}
+
+/* Button active state */
+.expand-button:active {
+  transform: scale(0.98); /* Shrink slightly on click */
+}
+
+/* Aligning image and text on the same line */
+.expand-button .button-content {
+  display: flex; /* Align content horizontally */
+  align-items: center; /* Ensure both the image and text are aligned vertically */
+}
+
+/* Icon styling */
+.expand-button .button-icon {
+  width: 16px; /* Set a specific width for the icon */
+  height: 16px; /* Set a specific height for the icon */
+  object-fit: contain; /* Ensure the image maintains its aspect ratio */
+  margin-right: 8px; /* Space between the icon and text */
+  transition: transform 0.3s ease-in-out; /* Smooth icon rotation */
+}
+
+/* Text styling */
+.expand-button .button-text {
+  font-size: 14px; /* Font size for the text */
+  color: #FFEB3B; /* Yellow text color */
+  font-weight: bold;
+}
+
+/* Expanded state for the button */
+.expand-button.expanded {
+  background-color: #FFEB3B; /* Yellow background when expanded */
+  color: #fff; /* White text */
+  transform: rotate(45deg); /* Rotate button when expanded */
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* Darker shadow for expanded state */
+}
+
+/* Expanded state for the icon */
+.expand-button.expanded .button-icon {
+  transform: rotate(180deg); /* Rotate icon when expanded */
+}
+
+/* Media query for small screens */
+@media (max-width: 600px) {
+  .expand-button {
+    padding: 4px 8px; /* Adjust padding for smaller screens */
+    font-size: 12px; /* Smaller font size on small screens */
+  }
+
+  .expand-button .button-icon {
+    width: 14px; /* Reduce icon size for smaller screens */
+    height: 14px;
+  }
+
+  .expand-button .button-text {
+    font-size: 12px; /* Adjust text size on small screens */
+  }
+}
+
+/* Media query for very small screens (e.g., mobile) */
+@media (max-width: 400px) {
+  .expand-button {
+    padding: 3px 6px; /* Adjust padding further for very small screens */
+    font-size: 10px; /* Even smaller font size */
+  }
+
+  .expand-button .button-icon {
+    width: 12px; /* Further reduce icon size */
+    height: 12px;
+  }
+
+  .expand-button .button-text {
+    font-size: 10px; /* Adjust text size */
+  }
+}
