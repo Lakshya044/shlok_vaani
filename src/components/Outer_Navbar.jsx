@@ -1,9 +1,13 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 
 const Outer_Navbar = () => {
   const { data: session } = useSession();
+  const [userSession, setUserSession] = useState(session);
+  useEffect(() => {
+    setUserSession(session);
+  }, [session]);
 
   const scrollToAuth = () => {
     const authSection = document.getElementById("auth");
@@ -23,7 +27,7 @@ const Outer_Navbar = () => {
         </div>
 
         <div className="flex gap-2 items-center">
-          {session ? (
+          {userSession ? (
             <>
               <p>Hey {session.user?.name || "User"}!</p>
               <div className="dropdown dropdown-end">
@@ -65,7 +69,7 @@ const Outer_Navbar = () => {
                   </li>
                   <li>
                     <a
-                      onClick={() => signOut()}
+                       onClick={() => signOut({ callbackUrl: "/" })}
                       className="hover:bg-red-500/20 hover:text-red-400 transition-colors duration-200 p-2 rounded-lg"
                     >
                       Logout
