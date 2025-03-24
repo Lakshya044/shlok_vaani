@@ -11,6 +11,10 @@ const Outer_Navbar = () => {
       authSection.scrollIntoView({ behavior: "smooth" });
     }
   };
+  const FnLogout = () =>{
+    signOut() ;
+    Router.push("/"); 
+  }
 
   return (
     <div>
@@ -65,7 +69,7 @@ const Outer_Navbar = () => {
                   </li>
                   <li>
                     <a
-                      onClick={() => signOut()}
+                      onClick={() => FnLogout()}
                       className="hover:bg-red-500/20 hover:text-red-400 transition-colors duration-200 p-2 rounded-lg"
                     >
                       Logout
