@@ -31,8 +31,6 @@ export default function LoggedInWebPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white">
-      <Outer_Navbar />
-
       {/* Books Section */}
       <div className="flex-1 container mx-auto px-6 py-24">
         {/* Page Title */}

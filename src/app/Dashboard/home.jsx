@@ -1,8 +1,8 @@
 import React from 'react'
-import Outer_Navbar from '../Outer_Navbar'
+import Outer_Navbar from '../../components/Outer_Navbar'
 import AuthForm from './auth'
 import Dashboard from './dashboard'
-import Outer_Footer from '../Outer_Footer'
+import Outer_Footer from '../../components/Outer_Footer'
 
 function Landing_Page() {
   return (
