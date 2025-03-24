@@ -53,7 +53,6 @@ const Page = () => {
 
   return (
     <div>
-      <Outer_Navbar />
       <div className="p-6 space-y-6 pt-24">
         {displayedShlokas.map((shloka) => (
           <ShlokaCard key={shloka._id} uid={shloka._id} />
@@ -88,7 +87,6 @@ const Page = () => {
           </button>
         </div>
       </div>
-      <Outer_Footer />
     </div>
   );
 };
