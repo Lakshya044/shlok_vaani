@@ -107,15 +107,12 @@ export default function AuthForm(){
   };
   const handleGoogleSignIn = async () => {
     try {
-      const result = await signIn("google", { redirect: false });
-      if (result?.error) {
-        setError(true);
-        setMessage("Google Sign In Failed");
-        setShowMessage(true);
-      } else {
-        setIsLoggedIn(true);
-        router.replace("/homepage");
-      }
+      await signIn("google", { redirect: '/homepage' });
+      const updatedSession = await getSession(); // Force session update
+        if (updatedSession) {
+          setIsLoggedIn(true);
+          router.push("/homepage");
+        }
     } catch (error) {
       console.error("Google Sign In Error:", error);
       setError(true);

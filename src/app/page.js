@@ -1,9 +1,9 @@
-import Landing_Page from "@/components/Dashboard/home";
+import Landing_Page from "@/app/Dashboard/home";
 
 export default function Home() {
   return (
     <>
-        <Landing_Page/>
+        <Landing_Page />
     </>
   );
 }
