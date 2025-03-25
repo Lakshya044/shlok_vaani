@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import GoogleButton from "react-google-button";
-import { signIn, signOut } from "next-auth/react";
+import { signIn, signOut,getSession } from "next-auth/react";
 export default function AuthForm(){
   const [isSignUp, setIsSignUp] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -59,14 +59,17 @@ export default function AuthForm(){
         setMessage(data.message || "Account created successfully. Please log in.");
         setShowMessage(true);
         setIsSignUp(false);
+      
       }
   
       // Handle login
       if (!isSignUp && response.ok) {
-        setIsLoggedIn(true);
-        setError(false);
-        setMessage(data.message || "Logged in successfully.");
-        router.replace("/homepage");
+        // Login Success
+        const updatedSession = await getSession(); // Force session update
+        if (updatedSession) {
+          setIsLoggedIn(true);
+          router.push("/homepage");
+        }
       }
   
       // Handle errors from API

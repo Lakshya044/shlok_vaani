@@ -1,12 +1,9 @@
-import Landing_Page from "@/app/Dashboard/home";
-import { SessionProvider } from "next-auth/react";
+import Landing_Page from "@/components/Dashboard/home";
 
 export default function Home() {
   return (
     <>
-      <SessionProvider>
         <Landing_Page/>
-      </SessionProvider>
     </>
   );
 }
