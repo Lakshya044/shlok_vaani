@@ -134,7 +134,7 @@ const ShlokaCard = ({ uid }) => {
           <Typography variant="body2" sx={{ color: "#ddd" }}>{`Book No: ${
             shlokaData.bookNo
           } | Chapter No: ${shlokaData.chapterNo} | Shloka: ${
-            shlokaData.shlokaNo + 1
+            shlokaData.shlokaNo
           }`}</Typography>
         }
         sx={{ position: "relative", zIndex: 2 }}

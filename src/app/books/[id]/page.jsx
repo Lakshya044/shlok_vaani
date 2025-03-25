@@ -1,23 +1,32 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import Outer_Footer from '@/components/Outer_Footer';
-import Outer_Navbar from '@/components/Outer_Navbar';
+import { useParams } from "next/navigation";
 import ShlokaCard from './ShlokaCard';
-import { FaSpinner, FaArrowLeft, FaArrowRight } from 'react-icons/fa'; // Importing spinner and arrow icons
+import { FaSpinner, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import books from '../../../../public/data/booksConstant';
 
 const Page = () => {
   const [shlokas, setShlokas] = useState([]);
   const [currentBook, setCurrentBook] = useState(1);
   const [currentChapter, setCurrentChapter] = useState(1);
-  const [currentPage, setCurrentPage] = useState(0); // Track the current page for pagination
-  const [loading, setLoading] = useState(false); // Track if data is being fetched
+  const [currentPage, setCurrentPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const { id } = useParams();
+
+  useEffect(() => {
+    console.log("Received ID:", id);
+  }, [id]);
 
   const fetchShlokas = async () => {
+    if (!id) return;
+    
     try {
-      setLoading(true); // Set loading to true when fetching data
+      setLoading(true);
+      const bookSlug = books[id] ? books[id].slug : "Mahabharata";
+      
       const shlokaResponse = await fetch(
-        `http://localhost:3000/api/fetch/shlokas/Mahabharata/${currentBook}/${currentChapter}`
+        `http://localhost:3000/api/fetch/shlokas/${bookSlug}/${currentBook}/${currentChapter}`
       );
 
       if (!shlokaResponse.ok) {
