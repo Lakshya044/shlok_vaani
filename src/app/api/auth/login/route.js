@@ -18,15 +18,16 @@ export async function POST(req) {
     if (result.error) {
       return NextResponse.json({ error: result.error }, { status: 401 });
     }
-    const session = await auth();
-    console.log("session",session);
-    if (!session) {
-      return NextResponse.json({ error: "Failed to retrieve user session" }, { status: 500 });
-    }
+    // await new Promise((resolve) => setTimeout(resolve, 100));
+    // const session = await auth();
+    // console.log("session",session);
+    // if (!session) {
+    //   return NextResponse.json({ error: "Failed to retrieve user session" }, { status: 500 });
+    // }
 
     return NextResponse.json({ 
       message: "Login successful",
-      user: session.user 
+      // user: session.user 
     }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

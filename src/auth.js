@@ -40,21 +40,38 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
 
+  // callbacks: {
+  //   async session({ session, token }) {
+  //     if (token) {
+  //       session.user.id = token.id;
+  //     }
+  //     return session;
+  //   },
+  //   async jwt({ token, user }) {
+  //     if (user) {
+  //       token.id = user.id;
+  //     }
+  //     return token;
+  //   },
+  // },
   callbacks: {
-    async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id;
-      }
-      return session;
-    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
       }
       return token;
     },
-  },
 
+    async session({ session, token }) {
+      if (!session.user) session.user = {}; 
+      session.user.id = token.id;
+      session.user.email = token.email;
+      session.user.name = token.name;
+      return session;
+    },
+  },
   pages: {
     signIn: "/auth/login",
   },
