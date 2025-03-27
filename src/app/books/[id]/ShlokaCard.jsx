@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { getSession } from 'next-auth/react';
 import {
   Card,
   CardHeader,
@@ -22,6 +23,7 @@ import {
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import "./styles.css";
+
 const ExpandMoreIcon = styled((props) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
@@ -40,6 +42,7 @@ const ShlokaCard = ({ uid }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedLanguage, setSelectedLanguage] = useState("English");
   const [meaning, setMeaning] = useState("");
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const fetchShlokaInfo = async () => {
@@ -71,7 +74,70 @@ const ShlokaCard = ({ uid }) => {
     setMeaning(meanings[language]);
   };
 
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session && session.user) {
+        // Save user id from session
+        setUserId(session.user.id);
+      }
+    });
+  }, [])
+  console.log(userId);
+
   if (!shlokaData) return <p>Loading...</p>;
+  // const handleLike = async () => {
+  //   if (!userId) {
+  //     alert("Please log in to like the shloka.");
+  //     return;
+  //   }
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:3000/api/create/like/${uid}`,
+  //       {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ userId }),
+  //       }
+  //     );
+  //     if (response.ok) {
+  //       setShlokaData((prev) => ({
+  //         ...prev,
+  //         likes: [...prev.likes, userId],
+  //       }));
+  //     }
+  //   } catch (error) {
+  //     console.error("Error liking shloka:", error);
+  //   }
+  // };
+
+  // const handleComment = async () => {
+  //   if (!userId) {
+  //     alert("Please log in to comment on the shloka.");
+  //     return;
+  //   }
+  //   const commentText = prompt("Enter your comment:");
+  //   if (!commentText) return;
+
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:3000/api/create/comment/${uid}`,
+  //       {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ userId, text: commentText }),
+  //       }
+  //     );
+  //     if (response.ok) {
+  //       setShlokaData((prev) => ({
+  //         ...prev,
+  //         commentCount: prev.commentCount + 1,
+  //       }));
+  //     }
+  //   } catch (error) {
+  //     console.error("Error commenting on shloka:", error);
+  //   }
+  // };
+
 
   return (
     <Card
@@ -144,11 +210,14 @@ const ShlokaCard = ({ uid }) => {
         <Typography
           variant="h5"
           sx={{
+            padding: "2rem",
+            border:"1px solid gold",
+            maxHeight: "14rem", overflowY: "auto" ,
             fontWeight: "bold",
             color: "#FFD700",
             textAlign: "center",
             textShadow: "3px 3px 10px rgba(255, 215, 0, 0.8)",
-            fontSize: { xs: "1.2rem", sm: "1.5rem", md: "2rem" },
+            fontSize: { xs: "1rem", sm: "1.2rem", md: "1.2rem" },
           }}
         >
           {shlokaData.text}
@@ -166,7 +235,7 @@ const ShlokaCard = ({ uid }) => {
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <IconButton sx={{ color: "gold" }}>
+          <IconButton  sx={{ color: "gold" }}>
             <Favorite />
           </IconButton>
           <Typography sx={{ marginRight: 2, color: "gold" }}>
@@ -187,10 +256,10 @@ const ShlokaCard = ({ uid }) => {
         </Box>
         <Box>
           <button className="expand-button" onClick={handleExpandClick}>
-              <div className="button-content">
-                <img src="/ai.png" alt="AI" className="button-icon" />
-                <span className="button-text">Explain it</span>
-              </div>
+            <div className="button-content">
+              <img src="/ai.png" alt="AI" className="button-icon" />
+              <span className="button-text">Explain it</span>
+            </div>
           </button>
         </Box>
       </CardActions>
