@@ -15,6 +15,10 @@ const Outer_Navbar = () => {
       authSection.scrollIntoView({ behavior: "smooth" });
     }
   };
+  const FnLogout = () =>{
+    signOut() ;
+    Router.push("/"); 
+  }
 
   return (
     <div>

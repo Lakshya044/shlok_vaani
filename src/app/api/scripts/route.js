@@ -11,15 +11,15 @@ export async function POST() {
     console.log("✅ Connected to MongoDB");
 
     // Read the entire JSON file
-    const filePath = path.join(process.cwd(), "src/backend/scripts/mahabharat2.json");
+    const filePath = path.join(process.cwd(), "src/backend/scripts/atharva_veda.json");
     const rawData = fs.readFileSync(filePath, "utf-8");
 
     // Parse the JSON content
     const shlokasData = JSON.parse(rawData).map((shloka) => ({
-      scripture: "Mahabharata",
-      bookNo: shloka.book || "Unknown Book",
-      chapterNo: shloka.chapter || 1,
-      shlokaNo: shloka.shloka || 1,
+      scripture: "AtharvaVeda",
+      bookNo: 1 || "Unknown Book",
+      chapterNo: shloka.kaanda || 1,
+      shlokaNo: shloka.sukta || 1,
       text: shloka.text,
     }));
 

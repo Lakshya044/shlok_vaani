@@ -1,17 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
-
+import books from "../../../public/data/booksConstant";
 const Book = ({ bookNumber }) => {
   const router = useRouter();
-
-  const books = {
-    1: { name: "Ramayana", image: "ramayana.jpg", slug: "ramayan" },
-    2: { name: "Mahabharata", image: "mahabharat.webp", slug: "mahabharata" },
-    3: { name: "Bhagavad Gita", image: "bhagavad-gita.jpg", slug: "bhagavad-gita" },
-    4: { name: "Vedas", image: "vedas.avif", slug: "vedas" },
-    5: { name: "Upanishads", image: "upanishads.jpg", slug: "upanishads" },
-  };
-
   const book = books[bookNumber] || { name: "Unknown Book", image: "https://via.placeholder.com/200" };
 
   return (

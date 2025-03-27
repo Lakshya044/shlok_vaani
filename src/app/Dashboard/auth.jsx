@@ -56,9 +56,10 @@ export default function AuthForm(){
       // Handle signup
       if (isSignUp && response.ok) {
         setError(false);
-      setMessage("Account created successfully. Please log in.");
-      setShowMessage(true);
-      setIsSignUp(false);
+        setMessage(data.message || "Account created successfully. Please log in.");
+        setShowMessage(true);
+        setIsSignUp(false);
+      
       }
   
       // Handle login
@@ -105,19 +106,21 @@ export default function AuthForm(){
     setShowMessage(false);
   };
   const handleGoogleSignIn = async () => {
-    // "use server"
-    const response = await signIn("google")
-    if(response.ok){
-     console.log("Google Sign In Successful")
-      setIsLoggedIn(true)
-      router.push("/homepage")
-    }else{
-      console.log("Google Sign In Failed")
-      setError(true)
-      setMessage("Google Sign In Failed")
-      setShowMessage(true)
+    try {
+      await signIn("google", { redirect: '/homepage' });
+      const updatedSession = await getSession(); // Force session update
+        if (updatedSession) {
+          setIsLoggedIn(true);
+          router.push("/homepage");
+        }
+    } catch (error) {
+      console.error("Google Sign In Error:", error);
+      setError(true);
+      setMessage("Something went wrong with Google Sign In.");
+      setShowMessage(true);
     }
   };
+  
 
 
   return (
