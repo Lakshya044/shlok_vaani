@@ -2,13 +2,13 @@
 import { useEffect, useState, useRef } from "react";
 import shlokas from "../../../public/data/shlokas";
 const Dashobard = () => {
-    const [scrollY, setScrollY] = useState(0);
+  const [scrollY, setScrollY] = useState(0);
   const scrollContainerRef = useRef(null);
   const [isPaused, setIsPaused] = useState(false);
   const [titleText, setTitleText] = useState("");
   const fullTitle = "DISCOVER THE WISDOM OF SHLOKAS, ONE VERSE AT A TIME";
 
-  // Streaming title effect
+
   useEffect(() => {
     let index = 0;
     const titleInterval = setInterval(() => {
@@ -41,14 +41,12 @@ const Dashobard = () => {
       className="relative w-full h-screen flex flex-col sm:flex-row items-center justify-center bg-cover bg-center p-4"
       style={{ backgroundImage: "url('/bg-image.jpg')" }}
     >
-      {/* Left Section for Title */}
       <div className="w-full sm:w-1/2 text-center sm:text-left">
         <h1 className="text-2xl md:text-4xl font-bold text-[#fbd54e] drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)]">
           {titleText}
         </h1>
       </div>
 
-      {/* Right Section for Continuous Scrolling Shlokas */}
       <div
         className="w-full sm:w-1/2 overflow-hidden flex flex-col items-center h-[300px]"
         ref={scrollContainerRef}

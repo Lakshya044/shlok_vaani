@@ -1,19 +1,18 @@
-"use client";  // ✅ Important for Next.js Client Components
+"use client"; 
 import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // ✅ Correct import
+import { useRouter } from 'next/navigation';
 import { getSession } from 'next-auth/react';
-import Outer_Navbar from '../../components/Outer_Navbar';
 import AuthForm from './auth';
 import Dashboard from './dashboard';
-import Outer_Footer from '../../components/Outer_Footer';
 
 function Landing_Page() {
   const router = useRouter();
 
   useEffect(() => {
     getSession().then((session) => {
+      console.log("Session is " , session);
       if (session) {
-        router.push('/homepage'); // ✅ Correct way to navigate
+        router.push('/homepage');
       }
     });
   }, []);

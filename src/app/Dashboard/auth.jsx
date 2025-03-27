@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import GoogleButton from "react-google-button";
-import { signIn, signOut,getSession } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 export default function AuthForm(){
   const [isSignUp, setIsSignUp] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -14,8 +14,8 @@ export default function AuthForm(){
   const [showRePassword, setShowRePassword] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
     // Reset message when switching between Sign Up and Log In
+    useEffect(() => {
     setMessage("");
     setShowMessage(false);
   }, [isSignUp]);
@@ -51,7 +51,7 @@ export default function AuthForm(){
         body: JSON.stringify(userDetails),
       });
   
-      const data = await response.json(); // Parse response JSON
+      const data = await response.json(); 
   
       // Handle signup
       if (isSignUp && response.ok) {
@@ -65,7 +65,7 @@ export default function AuthForm(){
       // Handle login
       if (!isSignUp && response.ok) {
         // Login Success
-        const updatedSession = await getSession(); // Force session update
+        const updatedSession = await getSession();
         if (updatedSession) {
           setIsLoggedIn(true);
           router.push("/homepage");

@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs"; // password hashing
 import dbConnect from "./lib/dbConnect";
 import User from "./backend/models/User";
 
@@ -40,20 +40,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
 
-  // callbacks: {
-  //   async session({ session, token }) {
-  //     if (token) {
-  //       session.user.id = token.id;
-  //     }
-  //     return session;
-  //   },
-  //   async jwt({ token, user }) {
-  //     if (user) {
-  //       token.id = user.id;
-  //     }
-  //     return token;
-  //   },
-  // },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {

@@ -4,10 +4,9 @@ const Outer_Footer = () => {
   return (
     <footer className="bg-base-100 text-gray-300 p-10 border-t border-gray-700">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
-        {/* Left Section: Logo & Description */}
         <div className="flex items-center space-x-4">
           <img 
-            src="/logo.png" // Replace with actual logo path
+            src="/logo.png" 
             alt="ShlokVaani Logo"
             className="w-12 h-12"
           />

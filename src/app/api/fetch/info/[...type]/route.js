@@ -11,7 +11,7 @@ export const GET = async (req, { params }) => {
     console.log("Raw params received:", params);
 
    
-    const _id = params.type?.[0]; 
+    const _id = await params.type?.[0]; 
 
     if (!_id) {
       return NextResponse.json({ message: "ID is required" }, { status: 400 });

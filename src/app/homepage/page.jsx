@@ -1,8 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import Outer_Navbar from "../../components/Outer_Navbar";
 import Book from "./Book";
-import Outer_Footer from "@/components/Outer_Footer";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -12,6 +10,7 @@ export default function LoggedInWebPage() {
   const router = useRouter();
 
   // Redirect unauthenticated users after the component renders
+  
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/");
@@ -27,13 +26,11 @@ export default function LoggedInWebPage() {
     );
   }
 
-  if (!session) return null; // Ensure nothing renders before redirect
+  if (!session) return null; 
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white">
-      {/* Books Section */}
       <div className="flex-1 container mx-auto px-6 py-24">
-        {/* Page Title */}
         <h1 className="text-5xl md:text-6xl font-extrabold text-center text-yellow-400 mb-12 tracking-widest drop-shadow-lg">
           📜 Explore Sacred Books 📖
         </h1>
