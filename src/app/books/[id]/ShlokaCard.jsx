@@ -82,7 +82,8 @@ const ShlokaCard = ({ uid }) => {
       }
     });
   }, [])
-  console.log(userId);
+
+  console.log("userId of the logged in user" ,userId);
 
   if (!shlokaData) return <p>Loading...</p>;
   // const handleLike = async () => {

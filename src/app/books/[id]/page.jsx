@@ -3,98 +3,139 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from "next/navigation";
 import ShlokaCard from './ShlokaCard';
-import { FaSpinner, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
-import books from '../../../../public/data/booksConstant';
+import { FaSpinner } from 'react-icons/fa';
+import BASE_URL from '../../../../src/lib/constant';
 
 const Page = () => {
   const [shlokas, setShlokas] = useState([]);
+  const [books, setBooks] = useState([]);
+  const [chapters, setChapters] = useState([]);
   const [currentBook, setCurrentBook] = useState(1);
   const [currentChapter, setCurrentChapter] = useState(1);
-  const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
   const { id } = useParams();
 
   useEffect(() => {
-    console.log("Received ID:", id);
-  }, [id]);
+    const fetchBooks = async () => {
+      try {
+        const bookResponse = await fetch(`${BASE_URL}/fetch/books/Mahabharata`);
+        if (bookResponse.ok) {
+          const data = await bookResponse.json();
+          setBooks(data.BookNumber);
+          setCurrentBook(data.BookNumber[0].bookNo);
+        }
+      } catch (error) {
+        console.error('Error fetching books:', error);
+      }
+    };
+    fetchBooks();
+  }, []);
+
+  useEffect(() => {
+    const fetchChapters = async () => {
+      if (!currentBook) return;
+      try {
+        const chapterResponse = await fetch(`${BASE_URL}/fetch/chapters/Mahabharata/${currentBook}`);
+        if (chapterResponse.ok) {
+          const data = await chapterResponse.json();
+          setChapters(data.chapterNumber);
+          setCurrentChapter(data.chapterNumber[0].chapterNo);
+        }
+      } catch (error) {
+        console.error('Error fetching chapters:', error);
+      }
+    };
+    fetchChapters();
+  }, [currentBook]);
 
   const fetchShlokas = async () => {
-    if (!id) return;
-    
+    if (!id || !currentBook || !currentChapter) return;
     try {
       setLoading(true);
-      const bookSlug = books[id] ? books[id].slug : "Mahabharata";
-      
-      const shlokaResponse = await fetch(
-        `http://localhost:3000/api/fetch/shlokas/${bookSlug}/${currentBook}/${currentChapter}`
-      );
-
+      const shlokaResponse = await fetch(`${BASE_URL}/fetch/shlokas/Mahabharata/${currentBook}/${currentChapter}`);
       if (!shlokaResponse.ok) {
         throw new Error('Failed to fetch shlokas');
       }
-
       const data = await shlokaResponse.json();
-      const newShlokas = data?.shlokas || [];
-
-      setShlokas(newShlokas); // Save all shlokas in state
+      setShlokas(data?.shlokas || []);
+      setCurrentPage(1);
     } catch (error) {
       console.error('Error fetching shlokas:', error);
     } finally {
-      setLoading(false); // Set loading to false after fetching data
+      setLoading(false);
     }
   };
 
-  // Logic to handle pagination
-  const nextPage = () => {
-    setCurrentPage((prevPage) => prevPage + 1); // Increment page when "Next" is clicked
-  };
-
-  const prevPage = () => {
-    setCurrentPage((prevPage) => Math.max(prevPage - 1, 0)); // Decrement page when "Previous" is clicked, but not below 0
-  };
-
-  // Only show 10 shlokas at a time based on the current page
-  const displayedShlokas = shlokas.slice(currentPage * 10, (currentPage + 1) * 10);
-
-  useEffect(() => {
-    fetchShlokas(); // Fetch all shlokas initially
-  }, [currentBook, currentChapter]); // Fetch new shlokas when book or chapter changes
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const displayedShlokas = shlokas.slice(startIndex, startIndex + itemsPerPage);
 
   return (
     <div>
-      <div className="p-6 space-y-6 pt-24">
-        {displayedShlokas.map((shloka) => (
-          <ShlokaCard key={shloka._id} uid={shloka._id} />
-        ))}
-        
-        {/* Loading Spinner when fetching more shlokas */}
-        {loading && (
+      <div className="p-6 space-y-6 pt-24 ">
+        <div className='flex justify-center'>
+          <label htmlFor="book-select">Select Book: </label>
+          <select
+            id="book-select"
+            onChange={(e) => setCurrentBook(Number(e.target.value))}
+            value={currentBook || 1}
+            className="px-4 py-2 rounded-md"
+          >
+            {books.map((book) => (
+              <option key={book.bookNo} value={book.bookNo}>
+                Book {book.bookNo}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className='flex justify-center'>
+          <label htmlFor="chapter-select">Select Chapter: </label>
+          <select
+            id="chapter-select"
+            onChange={(e) => setCurrentChapter(Number(e.target.value))}
+            value={currentChapter || 1}
+            className="px-4 py-2 rounded-md"
+          >
+            {chapters.map((chapter) => (
+              <option key={chapter.chapterNo} value={chapter.chapterNo}>
+                Chapter {chapter.chapterNo}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className='flex justify-center'>
+          <button className='btn btn-secondary ' onClick={fetchShlokas}>Show the Shlokas</button>
+        </div>
+
+        {loading ? (
           <div className="flex justify-center">
             <FaSpinner className="animate-spin text-blue-500 text-3xl" />
           </div>
+        ) : (
+          <>
+            {displayedShlokas.map((shloka) => (
+              <ShlokaCard key={shloka._id} uid={shloka._id} />
+            ))}
+            <div className="flex justify-between mt-4">
+              <button
+                className='btn btn-primary'
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Previous Page
+              </button>
+              <button
+                className='btn btn-primary'
+                onClick={() => setCurrentPage((prev) => (startIndex + itemsPerPage < shlokas.length ? prev + 1 : prev))}
+                disabled={startIndex + itemsPerPage >= shlokas.length}
+              >
+                Next Page
+              </button>
+            </div>
+          </>
         )}
-
-        {/* Pagination Buttons */}
-        <div className="flex justify-between mt-4">
-          <button
-            className="px-6 py-2 bg-yellow-700 text-white rounded-md shadow-md hover:bg-yellow-900 transition-all duration-300 ease-in-out flex items-center"
-            onClick={prevPage}
-            disabled={currentPage === 0} // Disable if already at the first page
-            title={currentPage === 0 ? 'No previous page' : ''}
-          >
-            <FaArrowLeft className="mr-2" />
-            Previous
-          </button>
-          
-          <button
-            className="px-6 py-2 bg-yellow-700 text-white rounded-md shadow-md hover:bg-yellow-900 transition-all duration-300 ease-in-out flex items-center"
-            onClick={nextPage}
-            disabled={displayedShlokas.length < 10} // Disable if fewer than 10 shlokas are displayed
-          >
-            Next
-            <FaArrowRight className="ml-2" />
-          </button>
-        </div>
       </div>
     </div>
   );
