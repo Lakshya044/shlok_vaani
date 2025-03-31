@@ -78,12 +78,12 @@ const Page = () => {
   const displayedShlokas = shlokas.slice(startIndex, startIndex + itemsPerPage);
 
   return (
-    <div>
-      <div className="p-2 space-y-6 pt-24 min-h-screen text-base-content">
+    <div className="flex flex-col min-h-screen">
+      <div className=" pt-24 min-h-screen text-base-content bg-gradient-to-b from-red-900 to-base-100 flex flex-col items-center gap-6">
         <h1 className="text-3xl font-bold text-center text-yellow-300">
-          Shlokas
+          {bookSlug} Shlokas 📖
         </h1>
-        <div className="flex justify-center">
+        <div className="flex items-center gap-3">
           <label htmlFor="book-select">Select Book: </label>
           <select
             id="book-select"
@@ -99,7 +99,7 @@ const Page = () => {
           </select>
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex items-center gap-3">
           <label htmlFor="chapter-select">Select Chapter: </label>
           <select
             id="chapter-select"
@@ -115,21 +115,21 @@ const Page = () => {
           </select>
         </div>
         <div className="flex justify-center">
-          <button className="btn btn-secondary " onClick={fetchShlokas}>
+          <button className="btn btn-secondary text-lg px-6 py-3 rounded-xl shadow-md hover:scale-105 transition-transform duration-200 " onClick={fetchShlokas}>
             Show the Shlokas
           </button>
         </div>
 
         {loading ? (
           <div className="flex justify-center">
-            <FaSpinner className="animate-spin text-blue-500 text-3xl" />
+            <FaSpinner className="animate-spin text-blue-600 text-3xl" />
           </div>
         ) : (
           <>
             {displayedShlokas.map((shloka) => (
               <ShlokaCard key={shloka._id} uid={shloka._id} />
             ))}
-            <div className="flex justify-between mt-4 bottom-0">
+            <div className="gap-3 flex justify-between p-4 items-between mt-4">
               <button
                 className="btn btn-primary"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
