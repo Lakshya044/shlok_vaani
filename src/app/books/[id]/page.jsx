@@ -73,7 +73,8 @@ const Page = () => {
 
   return (
     <div>
-      <div className="p-6 space-y-6 pt-24 ">
+      <div className="p-2 space-y-6 pt-24 min-h-screen text-base-content">
+        <h1 className="text-3xl font-bold text-center text-yellow-300">Shlokas</h1>
         <div className='flex justify-center'>
           <label htmlFor="book-select">Select Book: </label>
           <select
@@ -118,7 +119,7 @@ const Page = () => {
             {displayedShlokas.map((shloka) => (
               <ShlokaCard key={shloka._id} uid={shloka._id} />
             ))}
-            <div className="flex justify-between mt-4">
+            <div className="flex justify-between mt-4 bottom-0">
               <button
                 className='btn btn-primary'
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}

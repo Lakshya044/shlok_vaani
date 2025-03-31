@@ -23,6 +23,7 @@ import {
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import "./styles.css";
+import BASE_URL from '../../../../src/lib/constant';
 
 const ExpandMoreIcon = styled((props) => {
   const { expand, ...other } = props;
@@ -43,12 +44,11 @@ const ShlokaCard = ({ uid }) => {
   const [selectedLanguage, setSelectedLanguage] = useState("English");
   const [meaning, setMeaning] = useState("");
   const [userId, setUserId] = useState(null);
-
   useEffect(() => {
     const fetchShlokaInfo = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/fetch/info/${uid}`
+          `${BASE_URL}/fetch/info/${uid}`
         );
         const { bookData } = await response.json();
         setShlokaData(bookData);
@@ -77,39 +77,37 @@ const ShlokaCard = ({ uid }) => {
   useEffect(() => {
     getSession().then((session) => {
       if (session && session.user) {
-        // Save user id from session
         setUserId(session.user.id);
       }
     });
   }, [])
+  
+  if (!shlokaData) return <p className="flex justify-center">Loading...</p>;
 
-  console.log("userId of the logged in user" ,userId);
-
-  if (!shlokaData) return <p>Loading...</p>;
-  // const handleLike = async () => {
-  //   if (!userId) {
-  //     alert("Please log in to like the shloka.");
-  //     return;
-  //   }
-  //   try {
-  //     const response = await fetch(
-  //       `http://localhost:3000/api/create/like/${uid}`,
-  //       {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({ userId }),
-  //       }
-  //     );
-  //     if (response.ok) {
-  //       setShlokaData((prev) => ({
-  //         ...prev,
-  //         likes: [...prev.likes, userId],
-  //       }));
-  //     }
-  //   } catch (error) {
-  //     console.error("Error liking shloka:", error);
-  //   }
-  // };
+  const handleLike = async () => {
+    if (!userId) {
+      alert("Please log in to like the shloka.");
+      return;
+    }
+    try {
+      const response = await fetch(
+        `${BASE_URL}/create/like/${uid}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId })
+        }
+      );
+      if (response.ok) {
+        setShlokaData((prev) => ({
+          ...prev,
+          likes: [...prev.likes, userId],
+        }));
+      }
+    } catch (error) {
+      console.error("Error liking shloka:", error);
+    }
+  };
 
   // const handleComment = async () => {
   //   if (!userId) {
@@ -236,7 +234,7 @@ const ShlokaCard = ({ uid }) => {
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <IconButton  sx={{ color: "gold" }}>
+          <IconButton onClick={handleLike} sx={{ color: "gold" } }>
             <Favorite />
           </IconButton>
           <Typography sx={{ marginRight: 2, color: "gold" }}>
