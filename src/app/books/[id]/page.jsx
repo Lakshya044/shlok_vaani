@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import ShlokaCard from './ShlokaCard';
-import { FaSpinner } from 'react-icons/fa';
-import BASE_URL from '../../../../src/lib/constant';
+import ShlokaCard from "./ShlokaCard";
+import { FaSpinner } from "react-icons/fa";
+import BASE_URL from "../../../../src/lib/constant";
+import booksData from "../../../../public/data/booksConstant";
 
 const Page = () => {
   const [shlokas, setShlokas] = useState([]);
@@ -17,17 +18,18 @@ const Page = () => {
   const itemsPerPage = 3;
   const { id } = useParams();
 
+  const bookSlug = booksData[id] ? booksData[id].slug : "Mahabharata";
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const bookResponse = await fetch(`${BASE_URL}/fetch/books/Mahabharata`);
+        const bookResponse = await fetch(`${BASE_URL}/fetch/books/${bookSlug}`);
         if (bookResponse.ok) {
           const data = await bookResponse.json();
           setBooks(data.BookNumber);
           setCurrentBook(data.BookNumber[0].bookNo);
         }
       } catch (error) {
-        console.error('Error fetching books:', error);
+        console.error("Error fetching books:", error);
       }
     };
     fetchBooks();
@@ -37,14 +39,16 @@ const Page = () => {
     const fetchChapters = async () => {
       if (!currentBook) return;
       try {
-        const chapterResponse = await fetch(`${BASE_URL}/fetch/chapters/Mahabharata/${currentBook}`);
+        const chapterResponse = await fetch(
+          `${BASE_URL}/fetch/chapters/${bookSlug}/${currentBook}`
+        );
         if (chapterResponse.ok) {
           const data = await chapterResponse.json();
           setChapters(data.chapterNumber);
           setCurrentChapter(data.chapterNumber[0].chapterNo);
         }
       } catch (error) {
-        console.error('Error fetching chapters:', error);
+        console.error("Error fetching chapters:", error);
       }
     };
     fetchChapters();
@@ -54,15 +58,17 @@ const Page = () => {
     if (!id || !currentBook || !currentChapter) return;
     try {
       setLoading(true);
-      const shlokaResponse = await fetch(`${BASE_URL}/fetch/shlokas/Mahabharata/${currentBook}/${currentChapter}`);
+      const shlokaResponse = await fetch(
+        `${BASE_URL}/fetch/shlokas/${bookSlug}/${currentBook}/${currentChapter}`
+      );
       if (!shlokaResponse.ok) {
-        throw new Error('Failed to fetch shlokas');
+        throw new Error("Failed to fetch shlokas");
       }
       const data = await shlokaResponse.json();
       setShlokas(data?.shlokas || []);
       setCurrentPage(1);
     } catch (error) {
-      console.error('Error fetching shlokas:', error);
+      console.error("Error fetching shlokas:", error);
     } finally {
       setLoading(false);
     }
@@ -74,8 +80,10 @@ const Page = () => {
   return (
     <div>
       <div className="p-2 space-y-6 pt-24 min-h-screen text-base-content">
-        <h1 className="text-3xl font-bold text-center text-yellow-300">Shlokas</h1>
-        <div className='flex justify-center'>
+        <h1 className="text-3xl font-bold text-center text-yellow-300">
+          Shlokas
+        </h1>
+        <div className="flex justify-center">
           <label htmlFor="book-select">Select Book: </label>
           <select
             id="book-select"
@@ -91,7 +99,7 @@ const Page = () => {
           </select>
         </div>
 
-        <div className='flex justify-center'>
+        <div className="flex justify-center">
           <label htmlFor="chapter-select">Select Chapter: </label>
           <select
             id="chapter-select"
@@ -106,8 +114,10 @@ const Page = () => {
             ))}
           </select>
         </div>
-        <div className='flex justify-center'>
-          <button className='btn btn-secondary ' onClick={fetchShlokas}>Show the Shlokas</button>
+        <div className="flex justify-center">
+          <button className="btn btn-secondary " onClick={fetchShlokas}>
+            Show the Shlokas
+          </button>
         </div>
 
         {loading ? (
@@ -121,15 +131,19 @@ const Page = () => {
             ))}
             <div className="flex justify-between mt-4 bottom-0">
               <button
-                className='btn btn-primary'
+                className="btn btn-primary"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
               >
                 Previous Page
               </button>
               <button
-                className='btn btn-primary'
-                onClick={() => setCurrentPage((prev) => (startIndex + itemsPerPage < shlokas.length ? prev + 1 : prev))}
+                className="btn btn-primary"
+                onClick={() =>
+                  setCurrentPage((prev) =>
+                    startIndex + itemsPerPage < shlokas.length ? prev + 1 : prev
+                  )
+                }
                 disabled={startIndex + itemsPerPage >= shlokas.length}
               >
                 Next Page
