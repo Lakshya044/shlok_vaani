@@ -41,6 +41,32 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
 
   callbacks: {
+
+    async signIn({ user, account }) {
+      await dbConnect();
+    
+      const existingUser = await User.findOne({ email: user.email });
+    
+      if (!existingUser) {
+        // Create a new user depending on the auth provider
+        await User.create({
+          email: user.email,
+          name: user.name,
+          image: user.image,
+          authProvider: "google", 
+        });
+      } else if (
+        existingUser &&
+        account?.provider === "google" &&
+        existingUser.authProvider === "email"
+      ) {
+        // Prevent Google sign-in if account was originally created with credentials
+        throw new Error("Please use email and password to sign in.");
+      }
+    
+      return true;
+    },
+    
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;

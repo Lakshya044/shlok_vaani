@@ -10,7 +10,7 @@ export const GET = async (req, { params }) => {
 
     console.log("Raw params received:", params);
 
-    const typeParams = params?.type;
+    const typeParams = await params?.type;
     if (!typeParams || !Array.isArray(typeParams) || typeParams.length < 2) {
       return NextResponse.json(
         { message: "Scripture and bookNo are required" },

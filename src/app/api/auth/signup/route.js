@@ -18,6 +18,17 @@ export async function POST(req) {
     if (existingUser) {
       return NextResponse.json({ error: "User already exists" }, { status: 400 });
     }
+    
+    if(authProvider === "google") {
+
+      const newUser = new User({
+        email,
+        authProvider: "google",
+      });
+      await newUser.save();
+      return NextResponse.json({ message: "User registered successfully using Google Auth" }, { status: 201 });
+    }
+
 
     const hashedPassword = await bcrypt.hash(password, 10);
 

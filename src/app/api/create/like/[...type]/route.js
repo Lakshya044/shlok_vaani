@@ -12,7 +12,7 @@ export const POST = async (req, { params }) => {
     console.log("Raw params received:", params);
 
    
-    const _id = params.type?.[0]; 
+    const _id = await params.type?.[0]; 
     const { userId } = await req.json();
 
     if (!_id || !userId) {

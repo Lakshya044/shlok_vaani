@@ -5,7 +5,7 @@ const emailRegexSimple = /^\S+@\S+\.\S+$/ ;
 const UserSchema = new mongoose.Schema({
     name : {
         type : String , 
-        required : [true , "Please enter your Name..."]
+        required : [false , "Please enter your Name..."]
     },
     email : {
         type : String , 
@@ -15,7 +15,9 @@ const UserSchema = new mongoose.Schema({
     },
     password : {
         type : String ,
-        required : [true , "Please enter a valid password..."]
+        required: function () {
+            return this.authProvider === "email";
+          },
     },
     authProvider : {
         type : String , 
