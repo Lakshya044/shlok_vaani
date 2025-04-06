@@ -41,26 +41,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
 
   callbacks: {
-
     async signIn({ user, account }) {
       await dbConnect();
     
       const existingUser = await User.findOne({ email: user.email });
     
       if (!existingUser) {
-        // Create a new user depending on the auth provider
         await User.create({
           email: user.email,
           name: user.name,
           image: user.image,
-          authProvider: "google", 
+          authProvider: "google",
         });
       } else if (
         existingUser &&
         account?.provider === "google" &&
         existingUser.authProvider === "email"
       ) {
-        // Prevent Google sign-in if account was originally created with credentials
         throw new Error("Please use email and password to sign in.");
       }
     
@@ -68,22 +65,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     
     async jwt({ token, user }) {
+      await dbConnect();
+  
       if (user) {
-        token.id = user.id;
-        token.email = user.email;
-        token.name = user.name;
+        const dbUser = await User.findOne({ email: user.email });
+        token.id = dbUser._id.toString(); // Ensure this is the MongoDB _id
+        token.email = dbUser.email;
+        token.name = dbUser.name;
       }
+  
       return token;
     },
-
+  
     async session({ session, token }) {
-      if (!session.user) session.user = {}; 
+      if (!session.user) session.user = {};
       session.user.id = token.id;
       session.user.email = token.email;
       session.user.name = token.name;
       return session;
     },
   },
+  
   pages: {
     signIn: "/auth/login",
   },

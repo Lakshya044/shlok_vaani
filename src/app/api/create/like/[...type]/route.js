@@ -10,17 +10,10 @@ export const POST = async (req, { params }) => {
     await dbConnect();
     console.log("Database connected successfully");
 
-    // console.log("Raw params received:", params);
-
-   
     // Need to find the userid from the databse and not from the session because incase of google login , session stores Google UUID and not the mongodb user id
     const session = await auth();
-    const user = await User.findOne({ email: session.user.email });
-    if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
-    const userId = user._id;
-
+    console.log("Current Session Data" , session);
+    const userId = session.user.id ; 
     const _id = await params.type?.[0];
 
     if (!_id || !userId) {
