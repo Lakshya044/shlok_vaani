@@ -2,6 +2,7 @@ import dbConnect from "@/lib/dbConnect";
 import Shloka from "@/backend/models/Shloka";
 import User from "@/backend/models/User";
 import { NextResponse } from "next/server";
+import { auth } from "@/auth";
 
 export const POST = async (req, { params }) => {
   try {
@@ -9,11 +10,18 @@ export const POST = async (req, { params }) => {
     await dbConnect();
     console.log("Database connected successfully");
 
-    console.log("Raw params received:", params);
+    // console.log("Raw params received:", params);
 
    
-    const _id = await params.type?.[0]; 
-    const { userId } = await req.json();
+    // Need to find the userid from the databse and not from the session because incase of google login , session stores Google UUID and not the mongodb user id
+    const session = await auth();
+    const user = await User.findOne({ email: session.user.email });
+    if (!user) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+    const userId = user._id;
+
+    const _id = await params.type?.[0];
 
     if (!_id || !userId) {
         return NextResponse.json({ message: "Shloka ID and User ID are required" }, { status: 400 });
