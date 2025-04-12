@@ -1,25 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { getSession } from 'next-auth/react';
 import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardActions,
-  IconButton,
-  Typography,
-  Avatar,
-  Collapse,
-  Menu,
-  MenuItem,
-  Box,
+  Card, CardHeader, CardContent, CardActions, IconButton,
+  Typography, Avatar, Collapse, Menu, MenuItem, Box
 } from "@mui/material";
 import {
-  Favorite,
-  Share,
-  Bookmark,
-  Comment,
-  ExpandMore,
-  Language,
+  Favorite, Share, Bookmark, Comment, Language
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import "./styles.css";
@@ -31,9 +17,9 @@ const ExpandMoreIcon = styled((props) => {
 })(({ expand }) => ({
   transform: expand ? "rotate(180deg)" : "rotate(0deg)",
   transition: "0.3s ease",
-  backgroundColor: expand ? "rgba(0, 0, 0, 0.7)" : "transparent", // Dark background when expanded
+  backgroundColor: expand ? "rgba(0, 0, 0, 0.7)" : "transparent",
   "&:hover": {
-    backgroundColor: expand ? "rgba(0, 0, 0, 0.8)" : "transparent", // Darker on hover when expanded
+    backgroundColor: expand ? "rgba(0, 0, 0, 0.8)" : "transparent",
   },
 }));
 
@@ -44,12 +30,11 @@ const ShlokaCard = ({ uid }) => {
   const [selectedLanguage, setSelectedLanguage] = useState("English");
   const [meaning, setMeaning] = useState("");
   const [userId, setUserId] = useState(null);
+
   useEffect(() => {
     const fetchShlokaInfo = async () => {
       try {
-        const response = await fetch(
-          `${BASE_URL}/fetch/info/${uid}`
-        );
+        const response = await fetch(`${BASE_URL}/fetch/info/${uid}`);
         const { bookData } = await response.json();
         setShlokaData(bookData);
       } catch (error) {
@@ -58,6 +43,14 @@ const ShlokaCard = ({ uid }) => {
     };
     fetchShlokaInfo();
   }, [uid]);
+
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session && session.user) {
+        setUserId(session.user.id);
+      }
+    });
+  }, []);
 
   const handleExpandClick = () => setExpanded(!expanded);
   const handleClickLanguage = (event) => setAnchorEl(event.currentTarget);
@@ -74,69 +67,36 @@ const ShlokaCard = ({ uid }) => {
     setMeaning(meanings[language]);
   };
 
-  useEffect(() => {
-    getSession().then((session) => {
-      if (session && session.user) {
-        setUserId(session.user.id);
-      }
-    });
-  }, [])
-  
-  if (!shlokaData) return <p className="flex justify-center">Loading...</p>;
-
   const handleLike = async () => {
     if (!userId) {
       alert("Please log in to like the shloka.");
       return;
     }
     try {
-      const response = await fetch(
-        `${BASE_URL}/create/like/${uid}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId })
-        }
-      );
+      const response = await fetch(`${BASE_URL}/create/like/${uid}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
       if (response.ok) {
-        setShlokaData((prev) => ({
-          ...prev,
-          likes: [...prev.likes, userId],
-        }));
+        setShlokaData((prev) => {
+          const alreadyLiked = prev.likes.includes(userId);
+          return {
+            ...prev,
+            likes: alreadyLiked
+              ? prev.likes.filter((id) => id !== userId)
+              : [...prev.likes, userId],
+          };
+        });
       }
     } catch (error) {
       console.error("Error liking shloka:", error);
     }
   };
 
-  // const handleComment = async () => {
-  //   if (!userId) {
-  //     alert("Please log in to comment on the shloka.");
-  //     return;
-  //   }
-  //   const commentText = prompt("Enter your comment:");
-  //   if (!commentText) return;
+  if (!shlokaData) return <p className="flex justify-center">Loading...</p>;
 
-  //   try {
-  //     const response = await fetch(
-  //       `http://localhost:3000/api/create/comment/${uid}`,
-  //       {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({ userId, text: commentText }),
-  //       }
-  //     );
-  //     if (response.ok) {
-  //       setShlokaData((prev) => ({
-  //         ...prev,
-  //         commentCount: prev.commentCount + 1,
-  //       }));
-  //     }
-  //   } catch (error) {
-  //     console.error("Error commenting on shloka:", error);
-  //   }
-  // };
-
+  const isLikedByCurrentUser = userId && shlokaData.likes.includes(userId);
 
   return (
     <Card
@@ -165,8 +125,7 @@ const ShlokaCard = ({ uid }) => {
           left: 0,
           width: "100%",
           height: "100%",
-          background:
-            "linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.9))",
+          background: "linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.9))",
           zIndex: 1,
         }}
       />
@@ -193,14 +152,14 @@ const ShlokaCard = ({ uid }) => {
               color: "gold",
               textShadow: "2px 2px 6px rgba(255, 215, 0, 0.7)",
             }}
-          >{`Scripture: ${shlokaData.scripture}`}</Typography>
+          >
+            {`Scripture: ${shlokaData.scripture}`}
+          </Typography>
         }
         subheader={
-          <Typography variant="body2" sx={{ color: "#ddd" }}>{`Book No: ${
-            shlokaData.bookNo
-          } | Chapter No: ${shlokaData.chapterNo} | Shloka: ${
-            shlokaData.shlokaNo
-          }`}</Typography>
+          <Typography variant="body2" sx={{ color: "#ddd" }}>
+            {`Book No: ${shlokaData.bookNo} | Chapter No: ${shlokaData.chapterNo} | Shloka: ${shlokaData.shlokaNo}`}
+          </Typography>
         }
         sx={{ position: "relative", zIndex: 2 }}
       />
@@ -210,8 +169,9 @@ const ShlokaCard = ({ uid }) => {
           variant="h5"
           sx={{
             padding: "2rem",
-            border:"1px solid gold",
-            maxHeight: "14rem", overflowY: "auto" ,
+            border: "1px solid gold",
+            maxHeight: "14rem",
+            overflowY: "auto",
             fontWeight: "bold",
             color: "#FFD700",
             textAlign: "center",
@@ -234,10 +194,13 @@ const ShlokaCard = ({ uid }) => {
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <IconButton onClick={handleLike} sx={{ color: "gold" } }>
+          <IconButton
+            onClick={handleLike}
+            sx={{ color: isLikedByCurrentUser ? "red" : "gold" }}
+          >
             <Favorite />
           </IconButton>
-          <Typography sx={{ marginRight: 2, color: "gold" }}>
+          <Typography sx={{ marginRight: 2, color: isLikedByCurrentUser ? "red" : "gold"}}>
             {shlokaData.likes.length}
           </Typography>
           <IconButton sx={{ color: "gold" }}>
@@ -268,7 +231,7 @@ const ShlokaCard = ({ uid }) => {
           sx={{
             position: "relative",
             zIndex: 2,
-            backgroundColor: "rgba(0, 0, 0, 0.7)", // Dark background for the meaning section
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
             padding: 2,
             borderRadius: 2,
           }}
@@ -299,11 +262,7 @@ const ShlokaCard = ({ uid }) => {
               open={Boolean(anchorEl)}
               onClose={handleCloseLanguageMenu}
             >
-              <MenuItem
-                onClick={() => {
-                  handleSelectLanguage("English");
-                }}
-              >
+              <MenuItem onClick={() => handleSelectLanguage("English")}>
                 English
               </MenuItem>
               <MenuItem onClick={() => handleSelectLanguage("Hindi")}>
