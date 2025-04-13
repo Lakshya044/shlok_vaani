@@ -9,7 +9,7 @@ export const POST = async (req, { params }) => {
     await dbConnect();
     console.log("Database connected successfully");
 
-    const { userId, text } = await req.json();
+    const { userId, userName,text } = await req.json();
     const _id = params.type?.[0]; 
 
     if (!_id || !userId || !text) {
@@ -31,6 +31,7 @@ export const POST = async (req, { params }) => {
    
     const newComment = {
       userId,
+      userName,
       text,
       likes: [], 
       timestamp: new Date()
