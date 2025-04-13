@@ -53,7 +53,7 @@ const ShlokaCard = ({ uid }) => {
   const [selectedLanguage, setSelectedLanguage] = useState("English");
   const [meaning, setMeaning] = useState("");
   const [userId, setUserId] = useState(null);
-
+  const [userName, setUserName] = useState(null);
   // Local state for comments dialog
   const [open, setOpen] = useState(false);
   const [comments, setComments] = useState([]);
@@ -79,13 +79,13 @@ const ShlokaCard = ({ uid }) => {
     };
     fetchShlokaInfo();
   }, [uid]);
-
-  // Get user session
   useEffect(() => {
     getSession().then((session) => {
       if (session && session.user) {
         setUserId(session.user.id);
+        setUserName(session.user.name);
       }
+
     });
   }, []);
 
@@ -105,6 +105,7 @@ const ShlokaCard = ({ uid }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId,
+          userName,
           text: newComment,
         }),
       });
