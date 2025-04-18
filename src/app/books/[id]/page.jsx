@@ -129,7 +129,7 @@ const Page = () => {
             <FaSpinner className="animate-spin text-yellow-400 text-3xl" />
           </div>
         ) : (
-          <div className="flex flex-col items-center gap-4 overflow-y-scroll max-h-[60vh] w-full">
+          <div className="flex flex-col items-center gap-4 overflow-y-scroll max-h-[100%] w-full">
             {displayedShlokas.map((shloka) => (
               <ShlokaCard key={shloka._id} uid={shloka._id} />
             ))}
