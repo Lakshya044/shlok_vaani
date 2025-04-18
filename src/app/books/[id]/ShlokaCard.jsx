@@ -32,7 +32,6 @@ import {
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import "./styles.css";
-import BASE_URL from "../../../../src/lib/constant";
 
 const ExpandMoreIcon = styled((props) => {
   const { expand, ...other } = props;

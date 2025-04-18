@@ -7,67 +7,49 @@ import { FaSpinner } from "react-icons/fa";
 import booksData from "../../../../public/data/booksConstant";
 
 const Page = () => {
+  const { id } = useParams();
   const [shlokas, setShlokas] = useState([]);
   const [books, setBooks] = useState([]);
   const [chapters, setChapters] = useState([]);
-  const [currentBook, setCurrentBook] = useState(1);
-  const [currentChapter, setCurrentChapter] = useState(1);
+  const [currentBook, setCurrentBook] = useState(null);
+  const [currentChapter, setCurrentChapter] = useState(null);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
-  const { id } = useParams();
 
-  const bookSlug = booksData[id] ? booksData[id].slug : "Mahabharata";
-  useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const bookResponse = await fetch(`/api/fetch/books/${bookSlug}`);
-        if (bookResponse.ok) {
-          const data = await bookResponse.json();
-          setBooks(data.BookNumber);
-          setCurrentBook(data.BookNumber[0].bookNo);
-        }
-      } catch (error) {
-        console.error("Error fetching books:", error);
-      }
-    };
-    fetchBooks();
-  }, []);
+  const bookInfo = booksData[id] || {};
+  const bookSlug = bookInfo.slug || "Mahabharata";
+  const bgUrl = bookInfo.image || "/data/mahabharata.jpg";
 
   useEffect(() => {
-    const fetchChapters = async () => {
-      if (!currentBook) return;
-      try {
-        const chapterResponse = await fetch(
-          `/api/fetch/chapters/${bookSlug}/${currentBook}`
-        );
-        if (chapterResponse.ok) {
-          const data = await chapterResponse.json();
-          setChapters(data.chapterNumber);
-          setCurrentChapter(data.chapterNumber[0].chapterNo);
-        }
-      } catch (error) {
-        console.error("Error fetching chapters:", error);
-      }
-    };
-    fetchChapters();
-  }, [currentBook]);
+    if (!bookInfo || !bookInfo.books) return;
+    const bookNumbers = bookInfo.books;
+    setBooks(bookNumbers.map((bookNo) => ({ bookNo })));
+    setCurrentBook(bookNumbers[0]);
+  }, [bookInfo]);
+
+  useEffect(() => {
+    if (!bookInfo || !currentBook) return;
+    const chapterNumbers = bookInfo.chapters?.[currentBook] || [];
+    setChapters(chapterNumbers.map((chapterNo) => ({ chapterNo })));
+    setCurrentChapter(chapterNumbers[0] || null);
+  }, [bookInfo, currentBook]);
 
   const fetchShlokas = async () => {
-    if (!id || !currentBook || !currentChapter) return;
+    if (!currentBook || !currentChapter) return;
+
+    setLoading(true);
     try {
-      setLoading(true);
-      const shlokaResponse = await fetch(
+      const res = await fetch(
         `/api/fetch/shlokas/${bookSlug}/${currentBook}/${currentChapter}`
       );
-      if (!shlokaResponse.ok) {
-        throw new Error("Failed to fetch shlokas");
-      }
-      const data = await shlokaResponse.json();
-      setShlokas(data?.shlokas || []);
+      if (!res.ok) throw new Error("Shloka fetch failed");
+      const data = await res.json();
+      setShlokas(Array.isArray(data?.shlokas) ? data.shlokas : []);
       setCurrentPage(1);
-    } catch (error) {
-      console.error("Error fetching shlokas:", error);
+    } catch (err) {
+      console.error("Error fetching shlokas:", err);
+      setShlokas([]);
     } finally {
       setLoading(false);
     }
@@ -77,79 +59,110 @@ const Page = () => {
   const displayedShlokas = shlokas.slice(startIndex, startIndex + itemsPerPage);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className=" pt-24 min-h-screen text-base-content bg-gradient-to-b from-red-900 to-base-100 flex flex-col items-center gap-6">
-        <h1 className="text-3xl font-bold text-center text-yellow-300">
+    <div className=" pt-16 w-full min-h-screen -mb-40 ">
+      {/* Background */}
+      <div
+        className="fixed top-0 left-0 w-full h-full bg-cover bg-center"
+        style={{ backgroundImage: `url(${bgUrl})` }}
+      >
+        <div className="absolute inset-0 bg-black/70 " />
+      </div>
+
+      {/* Foreground */}
+      <div className="relative z-5 h-full overflow-y-auto px-4 pt-8 sm:px-8 flex flex-col items-center gap-6 text-base-content">
+        <h1 className="text-yellow-400 text-3xl font-extrabold text-center drop-shadow">
           {bookSlug} Shlokas 📖
         </h1>
-        <div className="flex items-center gap-3">
-          <label htmlFor="book-select">Select Book: </label>
-          <select
-            id="book-select"
-            onChange={(e) => setCurrentBook(Number(e.target.value))}
-            value={currentBook || 1}
-            className="px-4 py-2 rounded-md"
-          >
-            {books.map((book) => (
-              <option key={book.bookNo} value={book.bookNo}>
-                Book {book.bookNo}
-              </option>
-            ))}
-          </select>
+
+        {/* Selectors */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          {/* Book Select */}
+          <div className="flex items-center gap-2">
+            <label className="text-white font-semibold" htmlFor="book-select">
+              Book:
+            </label>
+            <select
+              id="book-select"
+              value={currentBook ?? ""}
+              onChange={(e) => setCurrentBook(Number(e.target.value))}
+              className="bg-white text-black rounded px-3 py-2"
+            >
+              {books.map((book) => (
+                <option key={book.bookNo} value={book.bookNo}>
+                  Book {book.bookNo}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Chapter Select */}
+          <div className="flex items-center gap-2">
+            <label className="text-white font-semibold" htmlFor="chapter-select">
+              Chapter:
+            </label>
+            <select
+              id="chapter-select"
+              value={currentChapter ?? ""}
+              onChange={(e) => setCurrentChapter(Number(e.target.value))}
+              className="bg-white text-black rounded px-3 py-2"
+            >
+              {chapters.map((chapter) => (
+                <option key={chapter.chapterNo} value={chapter.chapterNo}>
+                  Chapter {chapter.chapterNo}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <label htmlFor="chapter-select">Select Chapter: </label>
-          <select
-            id="chapter-select"
-            onChange={(e) => setCurrentChapter(Number(e.target.value))}
-            value={currentChapter || 1}
-            className="px-4 py-2 rounded-md"
-          >
-            {chapters.map((chapter) => (
-              <option key={chapter.chapterNo} value={chapter.chapterNo}>
-                Chapter {chapter.chapterNo}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="flex justify-center">
-          <button className="btn btn-secondary text-lg px-6 py-3 rounded-xl shadow-md hover:scale-105 transition-transform duration-200 " onClick={fetchShlokas}>
-            Show the Shlokas
-          </button>
-        </div>
+        {/* Fetch Button */}
+        <button
+          className="bg-yellow-400 text-black font-bold px-6 py-3 rounded-lg shadow-lg hover:scale-105 transition-transform"
+          onClick={fetchShlokas}
+        >
+          Show the Shlokas
+        </button>
 
+        {/* Shlokas Display */}
         {loading ? (
-          <div className="flex justify-center">
-            <FaSpinner className="animate-spin text-blue-600 text-3xl" />
+          <div className="flex justify-center py-4">
+            <FaSpinner className="animate-spin text-yellow-400 text-3xl" />
           </div>
         ) : (
-          <>
+          <div className="flex flex-col items-center gap-4 overflow-y-scroll max-h-[60vh] w-full">
             {displayedShlokas.map((shloka) => (
               <ShlokaCard key={shloka._id} uid={shloka._id} />
             ))}
-            <div className="gap-3 flex justify-between p-4 items-between mt-4">
-              <button
-                className="btn btn-primary"
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-              >
-                Previous Page
-              </button>
-              <button
-                className="btn btn-primary"
-                onClick={() =>
-                  setCurrentPage((prev) =>
-                    startIndex + itemsPerPage < shlokas.length ? prev + 1 : prev
-                  )
-                }
-                disabled={startIndex + itemsPerPage >= shlokas.length}
-              >
-                Next Page
-              </button>
-            </div>
-          </>
+
+            {/* Pagination */}
+            {shlokas.length > itemsPerPage && (
+              <div className="flex items-center gap-4 mt-4">
+                <button
+                  className="btn btn-outline btn-primary px-4 py-2"
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </button>
+                <span className="text-white font-semibold">
+                  Page {currentPage} of {Math.ceil(shlokas.length / itemsPerPage)}
+                </span>
+                <button
+                  className="btn btn-outline btn-primary px-4 py-2"
+                  onClick={() =>
+                    setCurrentPage((prev) =>
+                      startIndex + itemsPerPage < shlokas.length ? prev + 1 : prev
+                    )
+                  }
+                  disabled={startIndex + itemsPerPage >= shlokas.length}
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </div>
         )}
+        <div className="h-12" />
       </div>
     </div>
   );
