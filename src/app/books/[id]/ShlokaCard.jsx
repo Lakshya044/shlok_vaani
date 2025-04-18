@@ -70,7 +70,7 @@ const ShlokaCard = ({ uid }) => {
   useEffect(() => {
     const fetchShlokaInfo = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/fetch/info/${uid}`);
+        const response = await fetch(`/api/fetch/info/${uid}`);
         const { bookData } = await response.json();
         setShlokaData(bookData);
       } catch (error) {
@@ -100,7 +100,7 @@ const ShlokaCard = ({ uid }) => {
     if (!newComment.trim()) return;
 
     try {
-      const res = await fetch(`${BASE_URL}/create/comment/${uid}`, {
+      const res = await fetch(`/api/create/comment/${uid}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -152,7 +152,7 @@ const ShlokaCard = ({ uid }) => {
       return;
     }
     try {
-      const response = await fetch(`${BASE_URL}/create/like/${uid}`, {
+      const response = await fetch(`/api/create/like/${uid}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId }),
