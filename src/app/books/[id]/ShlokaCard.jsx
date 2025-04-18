@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { getSession } from "next-auth/react";
+import SmartToyIcon from "@mui/icons-material/SmartToy";
+
 import {
   Card,
+  CircularProgress,
   CardHeader,
   CardContent,
   CardActions,
@@ -66,7 +69,6 @@ const ShlokaCard = ({ uid }) => {
         setUserId(session.user.id);
         setUserName(session.user.name);
       }
-
     });
   }, []);
 
@@ -121,7 +123,7 @@ const ShlokaCard = ({ uid }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text: shlokaData.text}), 
+        body: JSON.stringify({ text: shlokaData.text }),
       });
 
       const data = await res.json();
@@ -136,8 +138,6 @@ const ShlokaCard = ({ uid }) => {
       setMeaning("Error explaining shloka.");
     }
   };
-
-
 
   // Handle liking the shloka
   const handleLike = async () => {
@@ -211,7 +211,6 @@ const ShlokaCard = ({ uid }) => {
             zIndex: 1,
           }}
         />
-
         <CardHeader
           avatar={
             <Avatar
@@ -245,7 +244,6 @@ const ShlokaCard = ({ uid }) => {
           }
           sx={{ position: "relative", zIndex: 2 }}
         />
-
         <CardContent sx={{ position: "relative", zIndex: 2 }}>
           <Typography
             variant="h5"
@@ -264,7 +262,6 @@ const ShlokaCard = ({ uid }) => {
             {shlokaData.text}
           </Typography>
         </CardContent>
-
         <CardActions
           disableSpacing
           sx={{
@@ -312,31 +309,75 @@ const ShlokaCard = ({ uid }) => {
             </button>
           </Box>
         </CardActions>
-
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent
             sx={{
               position: "relative",
               zIndex: 2,
-              backgroundColor: "rgba(0, 0, 0, 0.7)",
-              padding: 2,
-              borderRadius: 2,
+              background:
+                "linear-gradient(135deg, rgba(10,10,10,0.85), rgba(40,40,40,0.85))",
+              padding: 3,
+              borderRadius: 3,
+              boxShadow: "0 4px 30px rgba(255, 215, 0, 0.2)",
+              backdropFilter: "blur(10px)",
+              border: "1px solid rgba(255, 215, 0, 0.2)",
+              transition: "all 0.3s ease-in-out",
+              maxHeight: "200px", // Limit height
+              overflowY: "auto", // Enable scroll
+              scrollbarWidth: "thin",
+              scrollbarColor: "#FFD700 rgba(255, 255, 255, 0.1)",
+              "&::-webkit-scrollbar": {
+                width: "6px",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#FFD700",
+                borderRadius: "10px",
+              },
+              "&::-webkit-scrollbar-track": {
+                background: "transparent",
+              },
             }}
           >
             <Typography
               sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                fontSize: "1.25rem",
+                color: "#FFD700",
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
                 marginBottom: 2,
-                fontSize: "1.1rem",
-                color: "white",
-                fontWeight: "bold",
+                borderBottom: "1px solid rgba(255, 215, 0, 0.2)",
+                paddingBottom: 1,
               }}
             >
-              Shloka Meaning :
+              <SmartToyIcon sx={{ color: "#FFD700" }} />
+              Shloka Meaning
             </Typography>
-            <Typography sx={{ fontSize: "1.1rem", color: "#ddd" }}>
-              {meaning || "Loading..."}
-            </Typography>
-            
+
+            {meaning ? (
+              <Typography
+                sx={{
+                  fontSize: "1.15rem",
+                  color: "#FFF8DC",
+                  textShadow: "1px 1px 4px rgba(255, 215, 0, 0.5)",
+                  lineHeight: 1.6,
+                  animation: "fadeIn 0.6s ease-in-out",
+                  whiteSpace: "pre-wrap",
+                }}
+              >
+                {meaning}
+              </Typography>
+            ) : (
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <CircularProgress size={20} sx={{ color: "#FFD700" }} />
+                <Typography sx={{ color: "#FFD700", fontSize: "1rem" }}>
+                  Generating meaning using AI...
+                </Typography>
+              </Box>
+            )}
           </CardContent>
         </Collapse>
       </Card>
