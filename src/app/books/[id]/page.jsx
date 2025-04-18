@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import ShlokaCard from "./ShlokaCard";
 import { FaSpinner } from "react-icons/fa";
-import BASE_URL from "../../../../src/lib/constant";
 import booksData from "../../../../public/data/booksConstant";
 
 const Page = () => {
