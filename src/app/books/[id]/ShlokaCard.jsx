@@ -9,8 +9,6 @@ import {
   Typography,
   Avatar,
   Collapse,
-  Menu,
-  MenuItem,
   Box,
   Dialog,
   DialogTitle,
@@ -30,25 +28,11 @@ import {
   Comment,
   Language,
 } from "@mui/icons-material";
-import { styled } from "@mui/material/styles";
 import "./styles.css";
-
-const ExpandMoreIcon = styled((props) => {
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
-})(({ expand }) => ({
-  transform: expand ? "rotate(180deg)" : "rotate(0deg)",
-  transition: "0.3s ease",
-  backgroundColor: expand ? "rgba(0, 0, 0, 0.7)" : "transparent",
-  "&:hover": {
-    backgroundColor: expand ? "rgba(0, 0, 0, 0.8)" : "transparent",
-  },
-}));
 
 const ShlokaCard = ({ uid }) => {
   const [shlokaData, setShlokaData] = useState(null);
   const [expanded, setExpanded] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState("English");
   const [meaning, setMeaning] = useState("");
   const [userId, setUserId] = useState(null);
   const [userName, setUserName] = useState(null);
@@ -128,7 +112,32 @@ const ShlokaCard = ({ uid }) => {
 
   const handleExpandClick = () => setExpanded(!expanded);
 
- 
+  const handleExplain = async () => {
+    handleExpandClick();
+    try {
+      console.log("Request send for translation", shlokaData.text);
+      const res = await fetch("/api/model", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: shlokaData.text}), 
+      });
+
+      const data = await res.json();
+      console.log("Response from translation API", data);
+      if (data?.translation) {
+        setMeaning(data.translation);
+      } else {
+        setMeaning("Error explaining shloka.");
+      }
+    } catch (err) {
+      console.error(err);
+      setMeaning("Error explaining shloka.");
+    }
+  };
+
+
 
   // Handle liking the shloka
   const handleLike = async () => {
@@ -295,7 +304,7 @@ const ShlokaCard = ({ uid }) => {
             </IconButton>
           </Box>
           <Box>
-            <button className="expand-button" onClick={handleExpandClick}>
+            <button className="expand-button" onClick={handleExplain}>
               <div className="button-content">
                 <img src="/ai.png" alt="AI" className="button-icon" />
                 <span className="button-text">Explain it</span>
@@ -322,10 +331,10 @@ const ShlokaCard = ({ uid }) => {
                 fontWeight: "bold",
               }}
             >
-              Shloka Meaning ({selectedLanguage}):
+              Shloka Meaning :
             </Typography>
             <Typography sx={{ fontSize: "1.1rem", color: "#ddd" }}>
-              {meaning || "Select a language to view meaning"}
+              {meaning || "Loading..."}
             </Typography>
             
           </CardContent>
