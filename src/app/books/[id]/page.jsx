@@ -22,7 +22,7 @@ const Page = () => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const bookResponse = await fetch(`${BASE_URL}/fetch/books/${bookSlug}`);
+        const bookResponse = await fetch(`/api/fetch/books/${bookSlug}`);
         if (bookResponse.ok) {
           const data = await bookResponse.json();
           setBooks(data.BookNumber);
@@ -40,7 +40,7 @@ const Page = () => {
       if (!currentBook) return;
       try {
         const chapterResponse = await fetch(
-          `${BASE_URL}/fetch/chapters/${bookSlug}/${currentBook}`
+          `/api/fetch/chapters/${bookSlug}/${currentBook}`
         );
         if (chapterResponse.ok) {
           const data = await chapterResponse.json();
@@ -59,7 +59,7 @@ const Page = () => {
     try {
       setLoading(true);
       const shlokaResponse = await fetch(
-        `${BASE_URL}/fetch/shlokas/${bookSlug}/${currentBook}/${currentChapter}`
+        `/api/fetch/shlokas/${bookSlug}/${currentBook}/${currentChapter}`
       );
       if (!shlokaResponse.ok) {
         throw new Error("Failed to fetch shlokas");
