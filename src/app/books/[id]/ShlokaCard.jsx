@@ -48,12 +48,10 @@ const ExpandMoreIcon = styled((props) => {
 const ShlokaCard = ({ uid }) => {
   const [shlokaData, setShlokaData] = useState(null);
   const [expanded, setExpanded] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
   const [selectedLanguage, setSelectedLanguage] = useState("English");
   const [meaning, setMeaning] = useState("");
   const [userId, setUserId] = useState(null);
   const [userName, setUserName] = useState(null);
-  // Local state for comments dialog
   const [open, setOpen] = useState(false);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
@@ -130,19 +128,7 @@ const ShlokaCard = ({ uid }) => {
 
   const handleExpandClick = () => setExpanded(!expanded);
 
-  const handleClickLanguage = (event) => setAnchorEl(event.currentTarget);
-  const handleCloseLanguageMenu = () => setAnchorEl(null);
-
-  const handleSelectLanguage = (language) => {
-    setSelectedLanguage(language);
-    handleCloseLanguageMenu();
-    const meanings = {
-      English: "This is the English meaning of the Shloka.",
-      Hindi: "यह श्लोक का हिंदी अर्थ है।",
-      Sanskrit: "एष श्लोकस्य संस्कृतार्थः अस्ति।",
-    };
-    setMeaning(meanings[language]);
-  };
+ 
 
   // Handle liking the shloka
   const handleLike = async () => {
@@ -341,29 +327,7 @@ const ShlokaCard = ({ uid }) => {
             <Typography sx={{ fontSize: "1.1rem", color: "#ddd" }}>
               {meaning || "Select a language to view meaning"}
             </Typography>
-            <Box sx={{ marginTop: 2 }}>
-              <IconButton
-                onClick={handleClickLanguage}
-                sx={{ color: "gold", fontWeight: "bold" }}
-              >
-                <Language /> Select Language
-              </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleCloseLanguageMenu}
-              >
-                <MenuItem onClick={() => handleSelectLanguage("English")}>
-                  English
-                </MenuItem>
-                <MenuItem onClick={() => handleSelectLanguage("Hindi")}>
-                  Hindi
-                </MenuItem>
-                <MenuItem onClick={() => handleSelectLanguage("Sanskrit")}>
-                  Sanskrit
-                </MenuItem>
-              </Menu>
-            </Box>
+            
           </CardContent>
         </Collapse>
       </Card>
