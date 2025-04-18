@@ -3,7 +3,7 @@
 const booksData = {
   1: {
     name: "Ramayana",
-    image: "ramayana.jpg",
+    image: "Ramayana.jpg",
     slug: "Ramayana",
     books: [1],
     chapters: {
