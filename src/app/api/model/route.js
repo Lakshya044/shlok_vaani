@@ -21,6 +21,7 @@ export async function POST(req) {
     });
 
   const result = await response.json();
+  console.log("Result from Hugging Face API:", result);
     console.log("Result explanation text is , " ,   result) ;
   if (result.error) {
     console.error("Error from Hugging Face API:", result.error);

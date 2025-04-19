@@ -120,9 +120,6 @@ const ShlokaCard = ({ uid }) => {
       console.log("Request send for translation", shlokaData.text);
       const res = await fetch("/api/model", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({ text: shlokaData.text }),
       });
 

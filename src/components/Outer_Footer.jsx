@@ -1,5 +1,5 @@
 import React from "react";
-
+import { Analytics } from "@vercel/analytics/react"
 const Outer_Footer = () => {
   return (
     <footer className="bg-base-100 text-gray-300 p-10 border-t border-gray-700">
@@ -60,6 +60,9 @@ const Outer_Footer = () => {
       {/* Bottom Section */}
       <div className="mt-6 text-center text-sm text-gray-500 border-t border-gray-700 pt-4">
         © {new Date().getFullYear()} ShlokVaani. All rights reserved.
+      </div>
+      <div>
+        <Analytics /> 
       </div>
     </footer>
   );
