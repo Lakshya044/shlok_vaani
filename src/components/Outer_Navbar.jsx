@@ -15,18 +15,23 @@ const Outer_Navbar = () => {
       authSection.scrollIntoView({ behavior: "smooth" });
     }
   };
-  const FnLogout = () =>{
-    signOut() ;
-    Router.push("/"); 
-  }
+ 
+
+  const GoToHome = () =>{
+      if(session){
+        window.location.href = "/homepage" ;
+      }
+  };
 
   return (
     <div>
       <div className="navbar bg-transparent fixed top-0 left-0 right-0 backdrop-blur-lg z-10 border-b-2 border-gray-700 hover:bg-opacity-90 transition duration-300 ease-in-out">
         <div className="flex-1">
           <a className="btn btn-ghost text-xl text-[#fbd54e]">
+          <button onClick={GoToHome} className="flex items-center">
             <img src="/logo.png" alt="Logo" className="w-12 h-12 mr-2" />
             ShlokVaani
+          </button>
           </a>
         </div>
 
@@ -60,17 +65,7 @@ const Outer_Navbar = () => {
                       Profile
                       <span className="badge bg-[#fbd54e] text-black">New</span>
                     </a>
-                  </li>
-                  <li>
-                    <a className="hover:bg-[#fbd54e]/20 hover:text-[#fbd54e] transition-colors duration-200 p-2 rounded-lg">
-                      Friends
-                    </a>
-                  </li>
-                  <li>
-                    <a className="hover:bg-[#fbd54e]/20 hover:text-[#fbd54e] transition-colors duration-200 p-2 rounded-lg">
-                      Bookmarks
-                    </a>
-                  </li>
+                  </li>                  
                   <li>
                     <a
                        onClick={() => signOut({ callbackUrl: "/" })}
