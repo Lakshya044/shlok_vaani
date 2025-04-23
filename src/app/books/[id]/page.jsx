@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import ShlokaCard from "./ShlokaCard";
+import ShlokaCard from "@/components/ShlokaCard";
 import { FaSpinner } from "react-icons/fa";
 import booksData from "../../../../public/data/booksConstant";
 

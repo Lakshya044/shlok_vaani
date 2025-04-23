@@ -290,12 +290,12 @@ const ShlokaCard = ({ uid }) => {
             <Typography sx={{ marginRight: 2, color: "gold" }}>
               {shlokaData.commentCount}
             </Typography>
-            <IconButton sx={{ color: "gold" }}>
+            {/* <IconButton sx={{ color: "gold" }}>
               <Bookmark />
             </IconButton>
             <IconButton sx={{ color: "gold" }}>
               <Share />
-            </IconButton>
+            </IconButton> */}
           </Box>
           <Box>
             <button className="expand-button" onClick={handleExplain}>
