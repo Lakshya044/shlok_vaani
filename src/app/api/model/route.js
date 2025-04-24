@@ -28,7 +28,7 @@ export async function POST(req) {
     // Fallback to Gemini Pro API
     console.log("Hugging Face API error, falling back to Gemini Pro");
     try {
-      const GOOGLE_API_KEY = process.env.GEMINI_API_KEY;
+      const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
       if (!GOOGLE_API_KEY) {
         console.error('API_KEY is not defined in environment variables');
         throw new Error('API_KEY is not defined');
