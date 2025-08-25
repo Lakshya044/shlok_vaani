@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+
+# ShlokVaani
+
+ShlokVaani is a modern web application for exploring, reading, and interacting with Hindu scriptures such as the Bhagavad Gita, Ramayana, Vedas, Mahabharat, and Upanishads. The platform allows users to view shlokas, read their meanings, comment, like, bookmark, and even translate Sanskrit shlokas to English using AI-powered APIs.
+
+## Features
+
+- **User Authentication**: Sign up and log in using email/password or Google OAuth (NextAuth.js).
+- **Scripture Exploration**: Browse and search shlokas from various Hindu scriptures, organized by book, chapter, and verse.
+- **Comments & Likes**: Engage with the community by commenting on and liking shlokas.
+- **Bookmarks**: Save your favorite shlokas for quick access.
+- **AI Translation**: Translate Sanskrit shlokas to English using HuggingFace and Google Gemini Pro APIs.
+- **Responsive UI**: Built with Next.js and Tailwind CSS for a seamless experience across devices.
+- **Protected Routes**: Certain pages are accessible only to authenticated users.
+
+## Tech Stack
+
+- **Frontend**: Next.js (App Router), React, Tailwind CSS
+- **Backend**: Node.js, Next.js API routes, custom server
+- **Database**: MongoDB (Mongoose ODM)
+- **Authentication**: NextAuth.js (Google & Credentials)
+- **AI Integration**: HuggingFace API, Google Gemini Pro API
+
+## Project Structure
+
+- `/src/app/` — Main app pages (homepage, dashboard, books, etc.)
+- `/src/app/api/` — API endpoints for authentication, data fetching, comments, likes, translation, etc.
+- `/src/backend/models/` — Mongoose schemas for User and Shloka
+- `/src/components/` — UI components (navbar, footer, shloka card, Google auth, etc.)
+- `/public/data/` — Static JS files with book and shloka constants
+- `/lib/dbConnect.js` — MongoDB connection utility
+- `/server.js` — Custom server entrypoint
 
 ## Getting Started
 
-First, run the development server:
+1. **Install dependencies:**
+	```bash
+	npm install
+	```
+2. **Set up environment variables:**
+	- Create a `.env` file with MongoDB URI, Google OAuth credentials, HuggingFace token, and Gemini API key.
+3. **Run the development server:**
+	```bash
+	npm run dev
+	```
+	Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Deployment
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The app is ready to deploy on [Vercel](https://vercel.com/) or any platform supporting Next.js.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Contributing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Contributions are welcome! Please open issues or pull requests for improvements or bug fixes.
 
-## Learn More
+## License
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License.
